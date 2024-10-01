@@ -26,7 +26,7 @@
         <token.security.version>1.0.1</token.security.version>
         <jbcrypt.version>0.4</jbcrypt.version>
         <!-- DATABASE PROJECT NAME ON SERVER  -->
-        <db.name>javalindemo</db.name>
+        <db.name>poemdb</db.name>
         <javalin.port>7070</javalin.port>
     </properties>
     <repositories>

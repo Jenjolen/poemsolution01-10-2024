@@ -1,5 +1,6 @@
 package dk.cphbusiness.persistence.daos;
 
+import dk.cphbusiness.exceptions.EntityNotFoundException;
 import dk.cphbusiness.persistence.entities.IJPAEntity;
 
 import java.util.Set;
@@ -10,7 +11,7 @@ import java.util.Set;
  * @param <T>
  */
 public interface IDAO<T extends IJPAEntity> {
-    T findById(Long id);
+    T findById(Long id) throws EntityNotFoundException;
     Set<T> getAll();
     T create(T t);
     T update(T t);

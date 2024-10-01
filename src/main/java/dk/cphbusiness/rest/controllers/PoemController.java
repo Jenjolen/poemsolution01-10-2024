@@ -55,10 +55,10 @@ public class PoemController implements IController {
         return ctx -> {
             long id = Long.parseLong(ctx.pathParam("id"));
             Poem p = poemDAO.findById(id);
-            if (p == null){
-                ctx.attribute("msg", "No person with that id");
-                throw new ApiException(404, "No person with that id");
-            }
+//            if (p == null){
+//                ctx.attribute("msg", "No person with that id");
+//                throw new ApiException(404, "No person with that id");
+//            }
             ctx.status(HttpStatus.OK).json(new PoemDTO(p));
         };
     }

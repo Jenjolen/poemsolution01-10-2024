@@ -1,5 +1,6 @@
 package dk.cphbusiness.persistence.daos;
 
+import dk.cphbusiness.exceptions.EntityNotFoundException;
 import dk.cphbusiness.persistence.HibernateConfig;
 import dk.cphbusiness.persistence.entities.Poem;
 import jakarta.persistence.EntityManager;
@@ -41,13 +42,13 @@ class PoemDAOTest {
     }
     @Test
     @DisplayName("Test if findById throws exception")
-    void findByIdThrowException() {
+    void findByIdThrowException() throws EntityNotFoundException {
         Poem actual = poemDAO.findById(100L);
         assertEquals(poem, actual);
     }
 
     @Test
-    void findById() {
+    void findById() throws EntityNotFoundException {
         Poem actual = poemDAO.findById(poem.getId());
         assertEquals(poem, actual);
     }

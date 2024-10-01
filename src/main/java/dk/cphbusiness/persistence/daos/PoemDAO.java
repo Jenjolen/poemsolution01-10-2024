@@ -23,16 +23,13 @@ public class PoemDAO implements IDAO<Poem> {
     }
 
     @Override
-    public Poem findById(Long id) {
+    public Poem findById(Long id) throws EntityNotFoundException {
         try (EntityManager entityManager = emf.createEntityManager()) {
             Poem poem = entityManager.find(Poem.class, id);
             if(poem == null){
                 throw new EntityNotFoundException("Poem with id: " + id + " not found");
             }
             return poem;
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-            return null;
         }
     }
 

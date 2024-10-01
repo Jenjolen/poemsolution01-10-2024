@@ -1,8 +1,10 @@
 package dk.cphbusiness.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.bugelhartmann.UserDTO;
 import dk.cphbusiness.exceptions.ApiException;
+import dk.cphbusiness.exceptions.EntityNotFoundException;
 import dk.cphbusiness.security.SecurityController;
 import io.javalin.Javalin;
 import io.javalin.apibuilder.EndpointGroup;
@@ -23,7 +25,7 @@ import dk.cphbusiness.security.SecurityRoutes.Role;
  * Author: Thomas Hartmann
  */
 public class ApplicationConfig {
-    private ObjectMapper jsonMapper = new ObjectMapper();
+    private ObjectMapper objectMapper = new ObjectMapper();
     private static ApplicationConfig appConfig;
     private static JavalinConfig javalinConfig;
     private static Javalin app;
@@ -97,7 +99,7 @@ public class ApplicationConfig {
             // 3. Compare
             if (user == null)
                 ctx.status(HttpStatus.FORBIDDEN)
-                        .json(jsonMapper.createObjectNode()
+                        .json(objectMapper.createObjectNode()
                                 .put("msg", "Not authorized. No username were added from the token"));
 
             if (!SecurityController.getInstance().authorize(user, allowedRoles)) {
@@ -164,20 +166,33 @@ public class ApplicationConfig {
         return appConfig;
     }
 
-    public ApplicationConfig setApiExceptionHandling() {
-        // Might be overruled by the setErrorHandling method
-        app.exception(ApiException.class, (e, ctx) -> {
-            int statusCode = e.getStatusCode();
-            System.out.println("Status code: " + statusCode + ", Message: " + e.getMessage());
-            var on = jsonMapper
-                    .createObjectNode()
-                    .put("status", statusCode)
-                    .put("msg", e.getMessage());
-            ctx.json(on);
-            ctx.status(statusCode);
+    public ApplicationConfig setApi404ExceptionHandling() {
+        app.exception(EntityNotFoundException.class, (e, ctx) -> {
+            ctx.status(404);
+            ObjectNode errorMsg = objectMapper.createObjectNode();
+            ctx.json(errorMsg.put("msg", e.getMessage()));
+
         });
         return appConfig;
+
     }
+
+
+
+//    public ApplicationConfig setApiExceptionHandling() {
+//        // Might be overruled by the setErrorHandling method
+//        app.exception(ApiException.class, (e, ctx) -> {
+//            int statusCode = e.getStatusCode();
+//            System.out.println("Status code: " + statusCode + ", Message: " + e.getMessage());
+//            var on = jsonMapper
+//                    .createObjectNode()
+//                    .put("status", statusCode)
+//                    .put("msg", e.getMessage());
+//            ctx.json(on);
+//            ctx.status(statusCode);
+//        });
+//        return appConfig;
+//    }
 
     public ApplicationConfig setGeneralExceptionHandling() {
         app.exception(Exception.class, (e, ctx) -> {
